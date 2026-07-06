@@ -1,182 +1,1085 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginny Delicce</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="styles-sections.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ginny Delice · Umbral</title>
+<meta name="description" content="Ginny Delice — acompañamiento erótico, presencia y placer consciente en Xalapa, Veracruz. Un espacio íntimo que se recorre despacio." />
+<meta name="author" content="Ginny Delice" />
+<meta name="theme-color" content="#0D0D0F" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Ginny Delice · Umbral" />
+<meta property="og:description" content="Vivir en placer ha cambiado mi vida y podría transformar la tuya. Un umbral, no un catálogo." />
+<meta property="og:image" content="assets/hero.jpg" />
+<meta property="og:locale" content="es_MX" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Special+Elite&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root{
+  --black:#0D0D0F;
+  --black-soft:#141318;
+  --magenta:#C0004E;
+  --magenta-dim:#8a0038;
+  --bone:#F5ECD7;
+  --bone-dim:rgba(245,236,215,.62);
+  --bone-faint:rgba(245,236,215,.34);
+  --wine:#6B0020;
+
+  --serif:'Playfair Display', Georgia, serif;
+  --type:'Special Elite', 'Courier New', monospace;
+  --sans:'Montserrat', system-ui, sans-serif;
+
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--black);
+  color:var(--bone-dim);
+  font-family:var(--sans);
+  font-weight:300;
+  line-height:1.85;
+  letter-spacing:.01em;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+body.locked{overflow:hidden;height:100vh}
+
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+::selection{background:var(--magenta);color:var(--bone)}
+
+/* ============================================================
+   GRAIN / NOISE TEXTURE
+   ============================================================ */
+.grain{
+  position:fixed;inset:-50%;
+  width:200%;height:200%;
+  pointer-events:none;
+  z-index:9000;
+  opacity:.045;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  animation:grain 7s steps(6) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)} 10%{transform:translate(-4%,-3%)}
+  30%{transform:translate(3%,-5%)} 50%{transform:translate(-2%,4%)}
+  70%{transform:translate(4%,2%)} 90%{transform:translate(-3%,-2%)}
+  100%{transform:translate(0,0)}
+}
+
+/* subtle top-to-bottom vignette on top of everything */
+.vignette{
+  position:fixed;inset:0;pointer-events:none;z-index:8000;
+  background:radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cur-dot,.cur-ring{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9500;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+}
+.cur-dot{width:6px;height:6px;background:var(--bone)}
+.cur-ring{
+  width:34px;height:34px;border:1px solid rgba(245,236,215,.55);
+  transition:width .3s var(--ease),height .3s var(--ease),border-color .3s var(--ease),opacity .3s;
+}
+.cur-ring.hot{width:52px;height:52px;border-color:var(--magenta)}
+@media (hover:none),(pointer:coarse){.cur-dot,.cur-ring{display:none}}
+
+/* ============================================================
+   AGE GATE
+   ============================================================ */
+.gate{
+  position:fixed;inset:0;z-index:10000;
+  background:radial-gradient(140% 120% at 50% 30%, #16121a 0%, #0a0a0c 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;
+  transition:opacity 1s var(--ease),visibility 1s;
+}
+.gate.gone{opacity:0;visibility:hidden;pointer-events:none}
+.gate .mark{
+  font-family:var(--type);font-size:.72rem;letter-spacing:.55em;
+  color:var(--magenta);text-transform:uppercase;margin-bottom:2.4rem;
+  padding-left:.55em;
+}
+.gate h1{
+  font-family:var(--serif);font-weight:400;font-style:italic;
+  font-size:clamp(2rem,7vw,3.6rem);color:var(--bone);line-height:1.15;
+  margin-bottom:1.6rem;
+}
+.gate p{
+  max-width:34rem;font-size:.92rem;color:var(--bone-dim);
+  line-height:1.9;margin-bottom:2.8rem;
+}
+.gate .actions{display:flex;flex-direction:column;gap:1rem;align-items:center}
+.btn{
+  font-family:var(--type);font-size:.78rem;letter-spacing:.22em;
+  text-transform:uppercase;
+  padding:1.05rem 2.4rem;
+  border:1px solid var(--magenta);
+  color:var(--bone);background:transparent;cursor:pointer;
+  transition:background .5s var(--ease),color .5s var(--ease),letter-spacing .5s var(--ease);
+}
+.btn:hover,.btn:focus-visible{background:var(--magenta);color:var(--bone);letter-spacing:.3em;outline:none}
+.gate .exit{
+  font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;
+  color:var(--bone-faint);text-transform:uppercase;border:none;background:none;
+  cursor:pointer;padding:.4rem;transition:color .4s;
+}
+.gate .exit:hover,.gate .exit:focus-visible{color:var(--bone-dim);outline:none}
+.gate .rule{width:1px;height:60px;background:linear-gradient(var(--magenta),transparent);margin-bottom:2.4rem}
+
+/* ============================================================
+   FOCUS STATES (global)
+   ============================================================ */
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:1px solid var(--magenta);outline-offset:4px;
+}
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+main{opacity:0;transition:opacity 1.4s var(--ease)}
+main.revealed{opacity:1}
+
+section{
+  position:relative;
+  padding:clamp(5rem,12vh,9rem) clamp(1.5rem,7vw,7rem);
+  max-width:1180px;margin:0 auto;
+  overflow:hidden;
+}
+
+/* giant roman numeral watermark */
+.numeral{
+  position:absolute;top:-.15em;right:2%;
+  font-family:var(--serif);font-weight:500;font-style:italic;
+  font-size:clamp(9rem,26vw,22rem);
+  color:rgba(192,0,78,.05);
+  line-height:.8;pointer-events:none;user-select:none;z-index:0;
+}
+.act-label{
+  position:relative;z-index:1;
+  font-family:var(--type);font-size:.72rem;letter-spacing:.42em;
+  text-transform:uppercase;color:var(--magenta);
+  padding-left:.45em;margin-bottom:1.6rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.act-label::before{content:"";width:34px;height:1px;background:var(--magenta)}
+
+h2.act-title{
+  position:relative;z-index:1;
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(2rem,6vw,3.6rem);color:var(--bone);
+  line-height:1.1;margin-bottom:2.4rem;
+}
+h2.act-title em{font-style:italic;color:var(--magenta)}
+
+.act-body{position:relative;z-index:1}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.12s}
+.reveal.d2{transition-delay:.24s}
+.reveal.d3{transition-delay:.36s}
+
+/* ============================================================
+   FRAMED IMAGE
+   ============================================================ */
+.frame{position:relative;display:inline-block;max-width:100%}
+.frame img{
+  position:relative;z-index:1;
+  filter:grayscale(.15) contrast(1.02) brightness(.94);
+  transition:filter 1s var(--ease);
+}
+.frame:hover img{filter:grayscale(0) contrast(1.05) brightness(1)}
+/* double offset thin frames */
+.frame::before,.frame::after{content:"";position:absolute;pointer-events:none;z-index:2}
+.frame::before{inset:10px;border:1px solid rgba(192,0,78,.55)}
+.frame::after{inset:20px;border:1px solid rgba(107,0,32,.7);transform:translate(10px,10px)}
+/* gradient overlay toward black on edges */
+.frame .fade{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to top, rgba(13,13,15,.85), transparent 30%),
+    linear-gradient(to bottom, rgba(13,13,15,.5), transparent 25%),
+    radial-gradient(120% 110% at 50% 50%, transparent 55%, rgba(13,13,15,.7) 100%);
+}
+
+/* ============================================================
+   I. HERO
+   ============================================================ */
+#umbral{
+  min-height:100svh;max-width:none;margin:0;
+  display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:4rem;
+  padding:clamp(3rem,8vh,6rem) clamp(1.5rem,7vw,7rem);
+}
+.hero-copy{position:relative;z-index:2}
+.hero-name{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(3rem,10vw,7rem);line-height:.95;color:var(--bone);
+  letter-spacing:-.01em;margin-bottom:1.8rem;
+}
+.hero-name em{display:block;font-style:italic;color:var(--magenta)}
+.hero-open{
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(1.15rem,2.6vw,1.7rem);color:var(--bone-dim);
+  line-height:1.6;max-width:30rem;margin-bottom:3rem;
+}
+.hero-tag{
+  font-family:var(--type);font-size:.68rem;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--bone-faint);margin-bottom:2.2rem;
+}
+.hero-media{position:relative;z-index:1}
+.hero-media .frame img{max-height:82vh;width:100%;object-fit:cover}
+
+.descend{
+  display:inline-flex;align-items:center;gap:1rem;
+  font-family:var(--type);font-size:.74rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--bone);
+  transition:gap .4s var(--ease),color .4s;
+}
+.descend:hover,.descend:focus-visible{gap:1.6rem;color:var(--magenta)}
+.descend .arrow{
+  display:inline-block;width:1px;height:44px;background:var(--magenta);
+  position:relative;animation:pulse 2.4s var(--ease) infinite;
+}
+.descend .arrow::after{
+  content:"";position:absolute;bottom:0;left:50%;
+  width:7px;height:7px;border-right:1px solid var(--magenta);border-bottom:1px solid var(--magenta);
+  transform:translateX(-50%) rotate(45deg);
+}
+@keyframes pulse{0%,100%{opacity:.4;transform:scaleY(.9)}50%{opacity:1;transform:scaleY(1)}}
+
+@media(max-width:820px){
+  #umbral{grid-template-columns:1fr;gap:2.6rem;text-align:left;min-height:auto;padding-top:22vh;padding-bottom:8vh}
+  .hero-media{order:-1;margin:0 auto}
+  .hero-media .frame img{max-height:56vh}
+}
+
+/* ============================================================
+   II. MANIFIESTO
+   ============================================================ */
+.manifesto-lead{
+  font-family:var(--serif);font-weight:400;font-style:italic;
+  font-size:clamp(1.4rem,3.4vw,2.3rem);color:var(--bone);
+  line-height:1.5;max-width:38rem;margin-bottom:2.4rem;
+}
+.manifesto-p{max-width:40rem;font-size:1rem;margin-bottom:1.5rem}
+.manifesto-p:last-of-type{margin-bottom:0}
+.manifesto-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;
+  margin-top:4rem;align-items:start;
+}
+.mani-media{margin-top:4rem}
+.list-head{
+  font-family:var(--type);font-size:.8rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--magenta);margin-bottom:1.6rem;
+  display:flex;gap:.8rem;align-items:baseline;
+}
+.list-head .plus{font-size:1.1rem}
+.tenet{
+  border-top:1px solid rgba(245,236,215,.1);
+  padding:1.2rem 0;
+}
+.tenet strong{
+  color:var(--bone);font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:1.15rem;display:block;margin-bottom:.4rem;
+}
+.tenet span{font-size:.92rem;color:var(--bone-dim);line-height:1.75}
+.tenet.no strong{color:var(--magenta)}
+@media(max-width:820px){
+  .manifesto-grid{grid-template-columns:1fr;gap:2.5rem;margin-top:3rem}
+  .mani-media{margin-top:1rem}
+}
+
+/* ============================================================
+   III. TRIBUTO
+   ============================================================ */
+.tribute-lead{
+  font-size:1.02rem;max-width:40rem;margin-bottom:3rem;
+}
+.tribute-key{
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.6rem,4vw,2.6rem);
+  color:var(--bone);line-height:1.35;margin:0 0 3rem;
+  padding-left:1.4rem;border-left:2px solid var(--magenta);
+}
+.tribute-steps{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-bottom:2.6rem}
+.step{
+  border:1px solid rgba(245,236,215,.12);padding:2rem;position:relative;
+  background:linear-gradient(160deg, rgba(107,0,32,.08), transparent);
+}
+.step .n{
+  font-family:var(--type);font-size:.7rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--magenta);margin-bottom:1rem;display:block;
+}
+.step h3{
+  font-family:var(--serif);font-weight:400;font-size:1.35rem;color:var(--bone);
+  margin-bottom:1rem;
+}
+.step p{font-size:.92rem;margin-bottom:1rem}
+.bankbox{
+  font-family:var(--type);font-size:.82rem;line-height:2.1;
+  color:var(--bone);letter-spacing:.03em;
+  border-top:1px solid rgba(245,236,215,.12);
+  margin-top:1.2rem;padding-top:1.2rem;
+}
+.bankbox span{color:var(--bone-faint);text-transform:uppercase;font-size:.68rem;letter-spacing:.16em;display:block}
+.link-btn{
+  display:inline-flex;align-items:center;gap:.9rem;
+  font-family:var(--type);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bone);border:1px solid var(--magenta);
+  padding:.9rem 1.6rem;margin-top:.6rem;
+  transition:background .5s var(--ease),gap .4s var(--ease);
+}
+.link-btn:hover,.link-btn:focus-visible{background:var(--magenta);gap:1.4rem}
+.link-btn.pending{border-color:rgba(245,236,215,.25);color:var(--bone-faint)}
+.link-btn.pending:hover{background:transparent}
+.tribute-note{
+  font-family:var(--type);font-size:.72rem;letter-spacing:.06em;
+  color:var(--bone-faint);max-width:36rem;
+}
+@media(max-width:820px){.tribute-steps{grid-template-columns:1fr}}
+
+/* ============================================================
+   IV. SERVICIOS — accordions
+   ============================================================ */
+.cat{margin-bottom:4.5rem;position:relative;z-index:1}
+.cat-head{
+  font-family:var(--type);font-size:.9rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--bone);
+  padding-bottom:1rem;margin-bottom:.4rem;
+  border-bottom:1px solid rgba(192,0,78,.35);
+  display:flex;align-items:baseline;gap:1rem;
+}
+.cat-head .rn{font-family:var(--serif);font-style:italic;color:var(--magenta);font-size:1.1rem}
+.cat-sub{font-family:var(--sans);font-size:.78rem;color:var(--bone-faint);margin:.8rem 0 1.6rem;letter-spacing:.04em}
+
+details.svc{
+  border-bottom:1px solid rgba(245,236,215,.09);
+}
+details.svc > summary{
+  list-style:none;cursor:pointer;
+  padding:1.4rem 0;
+  display:flex;justify-content:space-between;align-items:center;gap:1.5rem;
+  font-family:var(--serif);font-weight:400;font-size:clamp(1.15rem,2.4vw,1.5rem);
+  color:var(--bone);
+  transition:color .4s var(--ease),padding-left .4s var(--ease);
+}
+details.svc > summary::-webkit-details-marker{display:none}
+details.svc > summary:hover{color:var(--magenta);padding-left:.6rem}
+details.svc > summary .sign{
+  flex:none;width:22px;height:22px;position:relative;transition:transform .5s var(--ease)
+}
+details.svc > summary .sign::before,
+details.svc > summary .sign::after{
+  content:"";position:absolute;top:50%;left:50%;background:var(--magenta);
+  transform:translate(-50%,-50%);transition:opacity .4s;
+}
+details.svc > summary .sign::before{width:14px;height:1px}
+details.svc > summary .sign::after{width:1px;height:14px}
+details.svc[open] > summary .sign{transform:rotate(90deg)}
+details.svc[open] > summary .sign::after{opacity:0}
+details.svc[open] > summary{color:var(--magenta)}
+
+.svc-body{
+  padding:.2rem 0 2rem;max-width:44rem;
+  animation:unfold .7s var(--ease);
+}
+@keyframes unfold{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.svc-body p{font-size:.94rem;margin-bottom:1rem}
+.svc-body p:last-child{margin-bottom:0}
+.svc-body ul{list-style:none;margin:1rem 0}
+.svc-body li{
+  position:relative;padding-left:1.4rem;font-size:.92rem;margin-bottom:.55rem;color:var(--bone-dim);
+}
+.svc-body li::before{content:"";position:absolute;left:0;top:.72em;width:6px;height:1px;background:var(--magenta)}
+.svc-body h4{
+  font-family:var(--type);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--bone-faint);margin:1.6rem 0 .8rem;
+}
+.price{
+  display:inline-block;font-family:var(--type);letter-spacing:.05em;
+  color:var(--bone);background:rgba(192,0,78,.14);
+  border:1px solid rgba(192,0,78,.4);
+  padding:.35rem .8rem;font-size:.85rem;margin:.25rem .4rem .25rem 0;
+}
+.priceline{font-family:var(--type);font-size:.9rem;color:var(--bone);letter-spacing:.03em}
+.yes-no{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.2rem}
+.yes-no .col h4{margin-top:0}
+.yes-no .yes h4{color:var(--magenta)}
+@media(max-width:640px){.yes-no{grid-template-columns:1fr}}
+
+/* nested details for conditions */
+details.sub{margin-top:1.2rem;border-top:1px solid rgba(245,236,215,.09)}
+details.sub > summary{
+  list-style:none;cursor:pointer;padding:1rem 0;
+  font-family:var(--type);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--magenta);display:flex;justify-content:space-between;align-items:center;
+}
+details.sub > summary::-webkit-details-marker{display:none}
+details.sub > summary::after{content:"+";font-size:1.1rem;transition:transform .4s}
+details.sub[open] > summary::after{content:"–"}
+details.sub .sub-body{padding-bottom:1.4rem}
+
+/* svc image */
+.svc-media{margin:1.4rem 0}
+.svc-media .frame img{max-height:340px;object-fit:cover;width:100%}
+
+/* Accessibility highlighted block */
+.cat.access{
+  border:1px solid rgba(192,0,78,.4);
+  padding:clamp(1.8rem,4vw,3rem);
+  background:linear-gradient(165deg, rgba(107,0,32,.14), rgba(20,19,24,.5));
+}
+.cat.access .cat-head{border-bottom-color:rgba(192,0,78,.5)}
+.access-intro{font-size:1rem;max-width:44rem;margin-bottom:2rem;color:var(--bone-dim)}
+.access-pill{
+  display:inline-block;font-family:var(--type);font-size:.66rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--magenta);border:1px solid rgba(192,0,78,.5);
+  padding:.35rem .9rem;margin-bottom:1.4rem;
+}
+
+/* ============================================================
+   V. CONTACTO
+   ============================================================ */
+#contacto{text-align:center}
+.contact-close{
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3.6vw,2.2rem);
+  color:var(--bone);line-height:1.5;max-width:34rem;margin:0 auto 2.6rem;
+}
+.contact-note{max-width:32rem;margin:0 auto 3rem;font-size:.94rem}
+.contact-btns{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.6rem}
+.contact-btns .btn.pending::after{
+  content:" · pendiente";color:var(--bone-faint);font-size:.62rem;letter-spacing:.1em;
+}
+.contact-remind{
+  font-family:var(--type);font-size:.72rem;letter-spacing:.14em;
+  color:var(--magenta);text-transform:uppercase;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  text-align:center;padding:4rem 1.5rem 5rem;
+  border-top:1px solid rgba(245,236,215,.08);
+  margin-top:3rem;
+}
+footer .sig{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--bone);margin-bottom:.8rem}
+footer .meta{font-family:var(--type);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-faint)}
+footer .adult{margin-top:1rem;font-size:.62rem;letter-spacing:.2em}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:opacity .3s ease!important}
+  .reveal{transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
 </head>
-<body>
+<body class="locked">
 
-<div id="glow"></div>
+<!-- ============ GRAIN + VIGNETTE ============ -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
 
-<!-- HERO -->
-<section id="hero">
-  <div id="hero-wrap">
-    <div id="hero-text" aria-label="Este espacio no es para cualquiera. Entrar puede costar la razón. ¿Estás dispueste?"><span id="hero-cursor"></span></div>
-    <p id="hero-sub">↓ &nbsp; sigue si algo en ti ya lo sabe</p>
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cur-dot" aria-hidden="true"></div>
+<div class="cur-ring" aria-hidden="true"></div>
+
+<!-- ============ AGE GATE ============ -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="mark">Ginny Delice</div>
+  <div class="rule"></div>
+  <h1 id="gate-title">Estás por cruzar<br>un umbral</h1>
+  <p>Este espacio contiene material sensual y erótico destinado únicamente a personas adultas. Para entrar debes ser mayor de 18 años y hacerlo por voluntad propia.</p>
+  <div class="actions">
+    <button class="btn" id="enter">Tengo más de 18 años — Entrar</button>
+    <button class="exit" id="leave">Prefiero salir</button>
   </div>
-</section>
+</div>
 
-<div class="sep"></div>
+<!-- ============ SITE ============ -->
+<main id="site">
 
-<!-- I — ¿QUIÉN SOY? -->
-<section id="quien-soy">
-  <div class="inner">
-    <span class="num fi">I</span>
-    <h2 class="fi d1">¿Quién soy?</h2>
-
-    <div class="prose">
-      <p class="fi d2">Me llamo Ginny. Y esto no es una presentación. Es una confesión.</p>
-
-      <p class="fi d2">Llegué al erotismo desde la curiosidad, no desde el escándalo. Desde el cuerpo como territorio sagrado, no como mercancía. Desde la convicción —aprendida en la carne y en el estudio— de que el placer tiene una dimensión espiritual que muy poca gente se atreve a explorar sin vergüenza.</p>
-
-      <p class="fi d2">Soy sexóloga. Soy acompañante erótica. Soy practicante de BDSM y dominación consciente. Estas palabras suenan enormes para quien no las conoce. Para quien ya las lleva por dentro, suenan exactamente correctas.</p>
+  <!-- ===== I. UMBRAL ===== -->
+  <section id="umbral">
+    <span class="numeral" aria-hidden="true">I</span>
+    <div class="hero-copy">
+      <div class="hero-tag">I · El umbral</div>
+      <h1 class="hero-name">Ginny <em>Delice</em></h1>
+      <p class="hero-open">«Vivir en placer ha cambiado mi vida y podría transformar la tuya.»</p>
+      <a href="#manifiesto" class="descend">
+        Desciende despacio
+        <span class="arrow" aria-hidden="true"></span>
+      </a>
     </div>
-
-    <blockquote class="pull fi d3">"El placer también es un camino espiritual."</blockquote>
-
-    <div class="prose">
-      <p class="fi d3">Creo en vínculos éticos. En el consentimiento como acto creativo, no como burocracia. En la dominación como práctica de presencia absoluta —donde quien guía lo hace desde la conciencia, no desde el ego; donde quien entrega lo hace desde la elección, no desde el miedo.</p>
-
-      <p class="fi d3">Soy feminista. No para confrontar, sino porque entendí que la educación sobre los cuerpos y el deseo es, al mismo tiempo, un acto político y un acto amoroso. Mi trabajo nace de esa convicción.</p>
-
-      <p class="fi d4">Si estás aquí es porque algo en ti ya sabe que el sexo puede ser más que una descarga. Que el cuerpo tiene una inteligencia que la mente tarda en entender. Que hay territorios que no has explorado —y una parte tuya quiere hacerlo con alguien que ya conozca el camino.</p>
-
-      <p class="fi d4"><em>Yo conozco el camino.</em></p>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- II — ¿ERES TÚ? -->
-<section id="eres-tu">
-  <div class="inner" style="max-width:740px;">
-    <span class="num fi">II</span>
-    <h2 class="fi d1">¿Eres tú?</h2>
-
-    <p class="prose fi d2" style="margin-bottom:0;">Antes de hablar de lo que ofrezco, necesito saber si somos compatibles. Este espacio no es para cualquiera —y eso no es arrogancia, es honestidad.</p>
-
-    <div class="two-col">
-      <div class="col-box fi d3">
-        <h3>Si esto resuena contigo…</h3>
-        <ul>
-          <li>Tienes curiosidad genuina, no solo morbo</li>
-          <li>Respetas los procesos sin saltarte pasos</li>
-          <li>Estás dispueste a cuestionarte</li>
-          <li>El erotismo te interesa como experiencia completa</li>
-          <li>Valoras el acuerdo explícito como parte del ritual</li>
-          <li>Puedes sostener la incomodidad del crecimiento</li>
-          <li>La presencia te parece el regalo más difícil</li>
-        </ul>
-      </div>
-      <div class="col-box no fi d4">
-        <h3>Si buscas esto otro, no soy tu persona…</h3>
-        <ul>
-          <li>Una descarga rápida sin proceso</li>
-          <li>Anonimato total desde el inicio</li>
-          <li>Saltarte la conversación previa</li>
-          <li>Un servicio intercambiable, sin cuidado</li>
-        </ul>
-        <p style="margin-top:1.2rem; font-size:13px; color:rgba(245,236,215,.32); font-style:italic;">Sin juicio. Solo claridad.</p>
+    <div class="hero-media">
+      <div class="frame">
+        <img src="assets/hero.jpg" alt="Ginny Delice, retrato" loading="eager" width="1707" height="2560" />
+        <div class="fade" aria-hidden="true"></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="sep"></div>
+  <!-- ===== II. MANIFIESTO ===== -->
+  <section id="manifiesto">
+    <span class="numeral" aria-hidden="true">II</span>
+    <div class="act-label">II · Manifiesto</div>
+    <div class="act-body">
+      <p class="manifesto-lead reveal">Si sigues leyendo puede ser que estés interesado en conectar con tu placer, quieres conocerte a ti mismo, o algo en ti pide experimentar una transformación profunda entre tu cuerpo y tu placer.</p>
+      <p class="manifesto-p reveal d1">El espacio que busco crear contigo es uno en el que puedas practicar el placer en cualquier forma que tú quieras experimentar.</p>
+      <p class="manifesto-p reveal d1">El placer es algo que se entrena, se practica, y cuantas más veces se experimenta, más formas de habitarlo se expresan en tu vida.</p>
 
-<!-- III — EL TRIBUTO -->
-<section id="tributo">
-  <div class="inner">
-    <span class="num fi">III</span>
-    <h2 class="fi d1">El tributo</h2>
-
-    <div class="prose">
-      <p class="fi d2">Antes de saber más, hay un primer gesto.</p>
-
-      <p class="fi d2">No le llamo pago porque no es una transacción. Le llamo tributo porque es exactamente eso: una señal. Una declaración de intención. Un acto que distingue a quien realmente quiere estar aquí de quien solo curiosea desde la distancia segura.</p>
-
-      <p class="fi d3">En el trabajo sexual ético, el tributo es el primer acuerdo. Yo recibo una señal de que mi tiempo y mi energía son valorados. Tú recibes algo que no tiene precio: la certeza de que das un paso real, no solo imaginas darlo.</p>
-    </div>
-
-    <div class="rule-box fi d3">
-      <span class="rule-label">La regla</span>
-      <p class="rule-text">Para acceder a cualquier servicio, antes hay que cumplir el tributo: <strong>comprar algo de mi Wishlist.</strong></p>
-      <p class="rule-sub">Sin tributo no hay entrevista. Sin entrevista no hay encuentro.</p>
-    </div>
-
-    <div class="btn-group fi d4">
-      <a class="btn btn-m" href="#" target="_blank" rel="noopener"><span>Ver Wishlist</span></a>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- IV — LA ENTREVISTA -->
-<section id="entrevista">
-  <div class="inner">
-    <span class="num fi">IV</span>
-    <h2 class="fi d1">La entrevista</h2>
-
-    <div class="prose">
-      <p class="fi d2">El tributo abre la puerta. Lo que hay del otro lado es una conversación.</p>
-
-      <p class="fi d2">No es trámite ni filtro burocrático. Es el momento en el que dejamos de ser una idea para volvernos personas reales: tu deseo, mis límites, lo que cuidamos, lo que no negociamos.</p>
-    </div>
-
-    <div class="steps">
-      <div class="step fi d2">
-        <span class="step-num">01</span>
-        <p class="step-body">Escribes —Telegram o Instagram— <strong style="color:var(--cream);">después</strong> de haber dejado tu tributo. Sin captura, sin conversación.</p>
+      <div class="mani-media reveal d2">
+        <div class="frame">
+          <img src="assets/manifiesto.jpg" alt="Ginny Delice" loading="lazy" width="2560" height="1707" />
+          <div class="fade" aria-hidden="true"></div>
+        </div>
       </div>
-      <div class="step fi d3">
-        <span class="step-num">02</span>
-        <p class="step-body">Hablamos. Qué buscas, qué te incomoda, qué no se toca. Tu honestidad es la mitad del trabajo.</p>
-      </div>
-      <div class="step fi d3">
-        <span class="step-num">03</span>
-        <p class="step-body">Si hay encaje, acordamos forma, espacio, tiempos, tarifa. Si no lo hay, también está bien.</p>
-      </div>
-      <div class="step fi d4">
-        <span class="step-num">04</span>
-        <p class="step-body">Cuidado mutuo antes, durante y después. Eso no es un extra. Es el trabajo mismo.</p>
+
+      <div class="manifesto-grid">
+        <div class="reveal">
+          <div class="list-head"><span class="plus">+</span> ¿Qué vas a encontrar en mí?</div>
+          <div class="tenet"><span>Una mujer que sabe pedir lo que desea y lo que no desea.</span></div>
+          <div class="tenet"><span>Una mujer que está presente en todo el encuentro, poniendo atención plena en ti y en el objetivo que construimos juntos.</span></div>
+          <div class="tenet"><span>Un espacio sin juicios para que puedas expresar en totalidad tus deseos y fantasías.</span></div>
+          <div class="tenet"><span>Una guía para experimentar con respeto, de manera que luego puedas ser un mejor amante con tus siguientes parejas eróticas.</span></div>
+        </div>
+        <div class="reveal d1">
+          <div class="list-head"><span class="plus">—</span> ¿Qué no vas a encontrar en mí?</div>
+          <div class="tenet no"><strong>Inmediatez.</strong><span>Para que el placer surja se debe cocinar a fuego lento. No estoy disponible 24/7 ni soy una máquina que puedas encender y apagar con un botón.</span></div>
+          <div class="tenet no"><strong>Coito.</strong><span>Meter y sacar el pene en una cavidad es algo que no ofrezco. Generar una experiencia sin presión ni expectativa, tanto para ti como para mí, nos permite que el deseo y el placer se expandan a áreas desconocidas.</span></div>
+          <div class="tenet no"><strong>Baja de precios.</strong><span>Yo valoro mucho mi cuerpo, mi intimidad, mis saberes y mi proceso. Mi trabajo sexual es ELEGIDO, por lo que mi precio es justo. Si no quieres pagarlo, recuerda que siempre hay más trabajadoras sexuales con diferentes rangos de precios. (Las propinas, tributos, regalos y que me consientas económicamente extra siempre es bienvenido.)</span></div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="sep"></div>
+  <!-- ===== III. TRIBUTO ===== -->
+  <section id="tributo">
+    <span class="numeral" aria-hidden="true">III</span>
+    <div class="act-label">III · El tributo</div>
+    <div class="act-body">
+      <h2 class="act-title reveal">El primer acto <em>de intención</em></h2>
+      <p class="tribute-lead reveal d1">Muchos hombres solo buscan mi atención y tiempo sin sentido real de contratar mis servicios, por lo que el proceso es el siguiente. No es un obstáculo: es la primera forma de decirme que vas en serio.</p>
 
-<!-- V — EL ENCUENTRO -->
-<section id="encuentro">
-  <div class="inner">
-    <p class="final-phrase fi">El resto<br>se descubre<br><em style="color:var(--magenta);">presente.</em></p>
+      <p class="tribute-key reveal d1">«Sin captura no hay conversación.»</p>
 
-    <ul class="evoked fi d2">
-      <li>acompañamiento erótico</li>
-      <li>dominación consciente</li>
-      <li>educación sexual y feminismo aplicado</li>
-      <li>ritual, escucha, presencia</li>
-    </ul>
+      <div class="tribute-steps">
+        <div class="step reveal">
+          <span class="n">Paso 1 · Opción A</span>
+          <h3>Un regalo de mi wishlist</h3>
+          <p>Envíame algo de mi lista de deseos de Amazon.</p>
+          <a href="#" class="link-btn pending" id="wishlist" target="_blank" rel="noopener">Ver wishlist · pendiente</a>
+        </div>
+        <div class="step reveal d1">
+          <span class="n">Paso 1 · Opción B</span>
+          <h3>Una transferencia</h3>
+          <p>Un monto de tres cifras o más a la siguiente cuenta:</p>
+          <div class="bankbox">
+            <span>Cuenta</span>138580000023266530
+            <span>Banco</span>Ualá
+            <span>Nombre</span>Sheccid Larissa
+          </div>
+        </div>
+      </div>
 
-    <div class="btn-group fi d3" style="justify-content:center;" id="contacto">
-      <a class="btn btn-m" href="https://t.me/ginnydelicce" target="_blank" rel="noopener"><span>Telegram</span></a>
-      <a class="btn" href="https://instagram.com/ginnydelicce" target="_blank" rel="noopener"><span>Instagram</span></a>
+      <p class="tribute-note reveal d2">Paso 2 · Envíame la captura de tu regalo o transferencia. Sin ella no hay conversación.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  GINNY DELICCE &nbsp;·&nbsp; +18 &nbsp;·&nbsp; CDMX
-</footer>
+  <!-- ===== IV. SERVICIOS ===== -->
+  <section id="servicios">
+    <span class="numeral" aria-hidden="true">IV</span>
+    <div class="act-label">IV · Servicios</div>
+    <div class="act-body">
+      <h2 class="act-title reveal">Lo que puede <em>ocurrir entre nosotros</em></h2>
+      <p class="tribute-lead reveal d1">Nada está a la vista de golpe. Abre solo aquello que despierte tu deseo; los precios aparecen cuando decides mirar de cerca.</p>
 
-<script src="script.js"></script>
+      <!-- ONLINE -->
+      <div class="cat reveal">
+        <div class="cat-head"><span class="rn">i</span> Online</div>
+        <p class="cat-sub">Desde donde estés, sin cruzar la ciudad.</p>
+
+        <details class="svc">
+          <summary>Suscripciones <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <h4>Stripchat</h4>
+            <p>Puedes acceder a miles de archivos por una suscripción de <span class="priceline">500 tk al mes</span>. My Fan Club | Stripchat.</p>
+            <h4>Telegram VIP</h4>
+            <ul>
+              <li>Mensualidad <span class="priceline">$500 MXN o 30 USD</span>.</li>
+              <li>Pago del 25 al 30 de cada mes; envíame tu comprobante al Telegram.</li>
+              <li>Accedes el día 1 del mes natural.</li>
+              <li>Subo contenido sensual 3 veces por semana.</li>
+              <li>Promoción de inicio: tarifa fija durante 1 año para los primeros 5 suscriptores.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Novia Online <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p><span class="price">Semana · $1,500</span><span class="price">Mes · $4,500</span></p>
+            <h4>Incluye</h4>
+            <ul>
+              <li>Mensaje por la mañana y por la noche, 5 días a la semana.</li>
+              <li>Fotos de mi día a día (ver una vez).</li>
+              <li>Una hora de sexteo a la semana, a acordar el día.</li>
+              <li>5 fotos sensuales a la semana.</li>
+              <li>Con la posibilidad de cultivar una relación personal real si hay química entre los dos. Esto no cambia el pago, pero cambia la profundidad de la relación.</li>
+            </ul>
+            <p>Extras que puedes solicitar por un monto adicional: llamadas acordadas, videos cortos, audios.</p>
+            <p>Si me consientes con regalos, transferencias espontáneas, pagos de otras cosas como manicura, pedicura, ropa, salidas, etc., también recibirás más atenciones de mi parte.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Packs de fotos <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <h4>Del repertorio · $800 x 6 fotos</h4>
+            <p>Puedes elegir: bikini en la playa, nude en la playa, set de motomami, boudoir, lencería…</p>
+            <h4>Exclusivas · desde $1,000 x 6 fotos</h4>
+            <p>Puedes pedir ángulo, tipo de ropa, temática. El precio puede aumentar dependiendo de la petición.</p>
+            <h4>Promoción del mes · Mix sorpresa</h4>
+            <p><span class="priceline">$500 x 6 fotos</span> del repertorio.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Videos a petición <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p><span class="price">$2,500</span> Duración de 15 a 25 min de contenido.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Sexting <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <ul>
+              <li><span class="priceline">$500 por 30 min</span></li>
+              <li><span class="priceline">$200 por 15 min extra</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Audios <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>A petición: lecturas eróticas, narración de fantasías, roleplay, gemidos… lo que se te antoje, podemos platicarlo.</p>
+            <p><span class="price">Desde $400</span></p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Sesiones eróticas personalizadas <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <div class="svc-media">
+              <div class="frame">
+                <img src="assets/bdsm.jpg" alt="Atmósfera de sesión erótica" loading="lazy" />
+                <div class="fade" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p>Servicio especializado en BDSM, juegos de roles y fetiches. La sesión estructurada incluye una entrevista online (30 min) para ver límites y fantasías.</p>
+            <h4>La sesión dura 90 min, repartidos así</h4>
+            <ul>
+              <li>15 min de check-in.</li>
+              <li>60 min de juegos eróticos.</li>
+              <li>15 min de aftercare.</li>
+            </ul>
+            <p><span class="price">$2,500 x 90 min de videollamada</span></p>
+            <ul>
+              <li>50% de anticipo para agendar la entrevista.</li>
+              <li>50% para apartar la sesión.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Videollamadas soft <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>No requieren entrevista. Se comparte un momento erótico que puede incluir baile erótico, striptease, plática hot, roleplay. NO INCLUYE PENETRACIÓN.</p>
+            <p><span class="price">$700 x 30 min</span></p>
+          </div>
+        </details>
+      </div>
+
+      <!-- PRESENCIAL -->
+      <div class="cat reveal">
+        <div class="cat-head"><span class="rn">ii</span> Presencial</div>
+        <p class="cat-sub">Xalapa, Veracruz · en persona, con acuerdos claros.</p>
+
+        <details class="svc">
+          <summary>Meet &amp; Greet <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Se hace en un espacio público, cafetería o restaurante de preferencia. Temas de interés de ambas partes.</p>
+            <p><span class="price">1 hora · $800</span><span class="price">2 horas · $1,500</span></p>
+            <p>El consumo y transporte corren por tu cuenta.</p>
+            <h4>Requisitos</h4>
+            <p>Tributo, foto de INE, información del lugar de la cita, aseo minucioso y evitar perfumes fuertes.</p>
+            <p><em>Si en la cita solo hablas de tus temas de interés, se te cobrará como cita de acompañamiento emocional por cada hora.</em></p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Cita de acompañamiento <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Se hace en un espacio público, cafetería o restaurante de preferencia. El tema que tú quieras platicar y que yo te escuche, te espejee, te aconseje desde mi experiencia humana.</p>
+            <p><span class="price">$1,000 cada hora</span></p>
+            <p>El consumo y transporte corren por tu cuenta.</p>
+            <h4>Requisitos</h4>
+            <p>Tributo, foto de INE, información del lugar de la cita, aseo minucioso y evitar perfumes fuertes.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Cuddle Date <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Básico · 2 horas. <span class="price">$3,000</span></p>
+            <h4>Incluye</h4>
+            <ul>
+              <li>Conversación.</li>
+              <li>Abrazos.</li>
+              <li>Tomarse de las manos.</li>
+              <li>Escuchar música.</li>
+              <li>Descansar juntos.</li>
+              <li>Acuerdos claros sobre el contacto físico.</li>
+            </ul>
+            <p>No incluye actividad sexual. El consentimiento puede modificarse en cualquier momento. Se acuerdan previamente las formas de contacto físico. Higiene personal obligatoria. Entrevista previa para nuevos clientes. Me reservo el derecho de rechazar solicitudes que no sean compatibles con el espíritu del servicio. El espacio y transporte corren por tu cuenta.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Acompañamiento a eventos <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <div class="svc-media">
+              <div class="frame">
+                <img src="assets/presencial.jpg" alt="Acompañamiento presencial" loading="lazy" />
+                <div class="fade" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p>Acompañante social, sensual y conversacional para hombres que desean una presencia femenina agradable, inteligente, versátil y auténtica.</p>
+            <h4>Eventos a los que puedo acompañarte</h4>
+            <p>Bodas, cenas de negocios, graduaciones, eventos corporativos, galas o premiaciones, conciertos, obras de teatro, exposiciones de arte, ferias y congresos.</p>
+            <h4>Tiempo de acompañamiento</h4>
+            <p><span class="price">2 a 3 h · $4,000</span><span class="price">4 a 6 h · $6,000</span><span class="price">+6 h · +$8,000</span></p>
+            <p>Si implica traslado largo, permanecer hasta la madrugada, viajar fuera de la ciudad o vestimenta especial, se cobrará extra.</p>
+            <p><strong style="color:var(--bone)">Incluye:</strong> mi tiempo, conversación, presencia en el evento.<br><strong style="color:var(--bone)">No incluye:</strong> vestido especial, zapatos especiales, maquillaje profesional, hospedaje, transporte.</p>
+            <p>Si quieres un look muy específico («vestido de gala negro, tacones y peinado profesional»), entonces cubres los gastos o me haces llegar las prendas elegidas.</p>
+            <div class="yes-no">
+              <div class="col yes"><h4>¿Qué sí se puede?</h4>
+                <ul>
+                  <li>Tomarse fotos juntos.</li>
+                  <li>Tomarse de la mano.</li>
+                  <li>Bailar.</li>
+                  <li>Beso en mejilla.</li>
+                  <li>Presentarse como pareja o algún otro roleplay a acordar.</li>
+                </ul>
+              </div>
+              <div class="col"><h4>No está permitido</h4>
+                <ul>
+                  <li>Contacto sexual.</li>
+                  <li>Besos románticos.</li>
+                  <li>Dormir juntos.</li>
+                  <li>Consumo excesivo de alcohol.</li>
+                  <li>Eventos que incluyan drogas duras.</li>
+                  <li>Cambios de plan de última hora.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- ACCESIBILIDAD -->
+      <div class="cat access reveal">
+        <div class="cat-head"><span class="rn">iii</span> Accesibilidad</div>
+        <span class="access-pill">Meet &amp; Greet incluyente</span>
+        <p class="access-intro">Ofrezco acompañamiento social, conversacional y presencial para personas neurodivergentes, con diversidad funcional, o para quienes prefieren una interacción basada en acuerdos claros, comunicación directa y respeto mutuo. Mi experiencia personal y profesional me ha permitido desarrollar habilidades para crear espacios cómodos, previsibles y libres de juicios, donde las necesidades de cada persona pueden expresarse con claridad.</p>
+
+        <details class="svc">
+          <summary>Lo que puedo ofrecer <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <ul>
+              <li>Comunicación directa y explícita.</li>
+              <li>Acuerdos claros antes del encuentro.</li>
+              <li>Conversación respetuosa y adaptada a las necesidades de cada persona.</li>
+              <li>Flexibilidad respecto a formas de interacción social.</li>
+              <li>Posibilidad de establecer acuerdos específicos sobre contacto físico, temas de conversación, espacios de descanso y necesidades sensoriales.</li>
+              <li>Acompañamiento en eventos sociales, culturales o recreativos.</li>
+              <li>Presencia tranquila y sin presión para cumplir expectativas sociales tradicionales.</li>
+            </ul>
+            <p>Tengo experiencia relacionándome cotidianamente con personas neurodivergentes y también acompañando a personas con distintas necesidades de accesibilidad física.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Entrevista previa <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Antes de cualquier encuentro se realizará una entrevista inicial por chat, audio o videollamada. El objetivo es conocer:</p>
+            <ul>
+              <li>Necesidades específicas de apoyo o accesibilidad.</li>
+              <li>Límites y expectativas de ambas partes.</li>
+              <li>Preferencias de comunicación.</li>
+              <li>Acuerdos sobre contacto físico, si aplica.</li>
+              <li>Características del lugar o actividad propuesta.</li>
+            </ul>
+            <p>La entrevista previa forma parte esencial del servicio.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Requisitos y principios <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <h4>Requisitos para el encuentro</h4>
+            <p>Debido a mi sensibilidad olfativa, solicito un aseo personal minucioso antes de los encuentros presenciales. Este requisito busca garantizar una experiencia cómoda para ambas partes y no constituye un juicio sobre la persona.</p>
+            <p>Pago de entrevista, foto de INE, información del lugar de la cita, aseo minucioso y evitar perfumes fuertes.</p>
+            <h4>Principios del servicio</h4>
+            <ul>
+              <li>Consentimiento continuo.</li>
+              <li>Comunicación clara.</li>
+              <li>Respeto mutuo.</li>
+              <li>Autonomía de ambas partes.</li>
+              <li>Posibilidad de renegociar acuerdos cuando sea necesario.</li>
+              <li>Derecho de cualquiera de las partes a expresar incomodidades o necesidades durante el encuentro.</li>
+            </ul>
+            <p>Cada persona es diferente. Por ello, el acompañamiento se construye de forma personalizada, considerando las necesidades, preferencias y límites de quienes participan.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Ejemplos y contrataciones <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Convenciones friki, geek, anime, manga o videojuegos; ferias del libro; museos y exposiciones; conciertos; cine y funciones especiales; obras de teatro; cafeterías y salidas casuales; restaurantes; parques y espacios recreativos; eventos de cosplay; juegos de mesa o clubes de hobbies; actividades de rol presencial; festivales culturales; bodas o reuniones familiares; fiestas donde se prefiera contar con una persona de confianza; congresos o eventos académicos; compras de ropa o actividades cotidianas que resulten más cómodas en compañía.</p>
+            <p>También puede tratarse simplemente de compartir una actividad agradable: ver una película, conversar mientras se toma un café, pasear por la ciudad, visitar una librería, explorar intereses especiales o hobbies, compartir una comida, practicar habilidades sociales en un entorno seguro y respetuoso.</p>
+            <h4>Contrataciones</h4>
+            <p><span class="price">Entrevista online · $500</span><span class="price">Hora · $1,000</span></p>
+            <p>No se tiene un objetivo terapéutico ni social específico. El acompañamiento consiste simplemente en disfrutar una experiencia en compañía de una persona con quien existen acuerdos claros, respeto mutuo y comunicación directa.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- EXPERIENCIAS -->
+      <div class="cat reveal">
+        <div class="cat-head"><span class="rn">iv</span> Experiencias</div>
+        <p class="cat-sub">Formatos largos, colectivos y escénicos.</p>
+
+        <details class="svc">
+          <summary>Acompañamiento vacacional <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Disponible únicamente para personas con quienes ya exista experiencia previa de trabajo presencial. Se requiere haber contratado al menos dos servicios presenciales cortos antes de solicitar este formato.</p>
+            <p>Antes de aceptar una propuesta, necesito conocer: destino del viaje, fechas y duración, programa general de actividades, tipo de hospedaje, número de personas que asistirán.</p>
+            <p>La aceptación del servicio queda sujeta a disponibilidad, energía personal y compatibilidad. Me reservo el derecho de aceptar o rechazar cualquier propuesta sin que ello afecte la relación profesional o el trato cordial durante futuros servicios.</p>
+
+            <details class="sub">
+              <summary>Condiciones</summary>
+              <div class="sub-body">
+                <ul>
+                  <li>El pago total se realiza por adelantado.</li>
+                  <li>Todos los gastos de transporte, eventos, hospedaje, alimentación, ropa especial o maquillaje profesional y traslados locales corren por cuenta del cliente.</li>
+                  <li>Es requisito indispensable contar con una habitación privada e individual para mí durante toda la estancia.</li>
+                  <li>La habitación deberá ser de calidad equivalente o superior a la del hospedaje general contratado para el viaje.</li>
+                  <li>Debo contar con un mínimo de 4 horas libres diarias para actividades personales.</li>
+                  <li>Debo contar con un mínimo de 8 horas continuas destinadas al descanso nocturno.</li>
+                  <li>Cualquier modificación importante del itinerario deberá comunicarse previamente.</li>
+                  <li>Los días de traslado se consideran días contratados.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="sub">
+              <summary>Límites y derecho a finalizar</summary>
+              <div class="sub-body">
+                <p>El acompañamiento vacacional no incluye contacto sexual. Si durante el viaje alguna actividad de carácter íntimo o sexual es propuesta para contratación, podré aceptarla o rechazarla libremente. Una negativa no modificará el trato amable, respetuoso y profesional durante el resto de la estancia.</p>
+                <p>La contratación de este servicio no implica exclusividad emocional, romántica, afectiva ni sexual.</p>
+                <p>Me reservo el derecho a suspender parcial o totalmente el acompañamiento y retirarme de la estancia en cualquier momento si considero que existen condiciones que afectan mi seguridad, bienestar, descanso, dignidad o integridad personal. Esto incluye, entre otros casos: trato irrespetuoso, hostil o humillante; presión para realizar actividades no acordadas previamente; incumplimiento de las condiciones de hospedaje, descanso o privacidad; situaciones que generen incomodidad significativa o sensación de inseguridad.</p>
+                <p>En caso de decidir finalizar el servicio anticipadamente, no existirá obligación de reembolso de los honorarios ya pagados. Asimismo, el cliente será responsable de cubrir los gastos necesarios para mi regreso seguro al lugar de origen.</p>
+                <p>Cuento con pasaporte vigente para viajes internacionales. Mi nivel de inglés es básico-conversacional.</p>
+              </div>
+            </details>
+
+            <h4>Contrataciones</h4>
+            <ul>
+              <li>Viajes locales (traslado de 1 o 2 horas en coche privado): <span class="priceline">desde $4,000 MXN por día o 250 USD por día</span>.</li>
+              <li>Viajes nacionales: <span class="priceline">desde $5,000 MXN por día / 300 USD por día</span>.</li>
+              <li>Viajes internacionales: <span class="priceline">desde $8,000 MXN por día / 500 USD por día</span>.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Facilitación de eventos eróticos grupales <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>¿Tienes un grupo de amigos con curiosidad por el erotismo y no sabes cómo romper el hielo? ¿Te gustaría crear un espacio seguro para explorar la sensualidad, el juego, el BDSM o el erotismo colectivo, pero no quieres asumir la responsabilidad de organizarlo?</p>
+            <p>Puedo ayudarte. Mi trabajo consiste en diseñar, facilitar y acompañar experiencias eróticas para grupos adultos, cuidando la comunicación, los acuerdos, el consentimiento y la comodidad de las personas participantes.</p>
+            <h4>Algunos ejemplos</h4>
+            <p>Reuniones privadas para explorar el erotismo entre amistades; eventos para conocer personas con intereses afines; encuentros temáticos sobre BDSM; espacios de exploración sensual y corporal; dinámicas para romper el hielo y fomentar la confianza grupal; conversatorios y actividades sobre deseo, placer y consentimiento; eventos eróticos culturales y artísticos.</p>
+            <h4>Lo que puedo aportar</h4>
+            <p>Diseño de actividades, facilitación grupal, creación de acuerdos de convivencia, herramientas de consentimiento y comunicación, dinámicas de integración, mediación de conflictos, ambiente seguro y respetuoso.</p>
+            <p>Mi trabajo consiste en la organización, facilitación y acompañamiento del evento. La contratación de este servicio no implica participación sexual ni contacto íntimo con las personas asistentes. Cada evento se diseña según las necesidades del grupo y se cotiza de forma personalizada.</p>
+            <p><span class="price">Desde $8,000 MXN</span> Cotización personalizada de acuerdo al número de asistentes y tiempo del evento.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Artista invitada para eventos privados <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <div class="svc-media">
+              <div class="frame">
+                <img src="assets/artista.jpg" alt="Ginny Delice como artista invitada" loading="lazy" />
+                <div class="fade" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p>¿Buscas una experiencia original, elegante y memorable para tu evento? Puedo participar como artista invitada en celebraciones privadas para personas adultas.</p>
+            <h4>Formatos disponibles</h4>
+            <p>Lecturas eróticas dramatizadas, narración de relatos sensuales, performance erótica, danza sensual, striptease artístico, intervenciones escénicas, conversatorios sobre erotismo/deseo/placer, dinámicas participativas para grupos.</p>
+            <h4>Ideal para</h4>
+            <p>Cumpleaños, despedidas de soltería, reuniones privadas, eventos temáticos, celebraciones de pareja, encuentros culturales, festivales alternativos.</p>
+            <h4>Mi enfoque</h4>
+            <p>Trabajo desde una visión artística, lúdica y respetuosa del erotismo. Las presentaciones están orientadas a la experiencia estética, emocional y sensorial. No incluyen servicios sexuales ni contacto íntimo con asistentes.</p>
+            <p><span class="price">Desde $5,000</span></p>
+          </div>
+        </details>
+      </div>
+
+      <!-- PRODUCTOS -->
+      <div class="cat reveal">
+        <div class="cat-head"><span class="rn">v</span> Productos</div>
+        <p class="cat-sub">Objetos que llevan algo de mí.</p>
+
+        <details class="svc">
+          <summary>Pantys usadas <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Se entregan en un punto público a acordar. Incluye 3 fotos con ellas puestas. Puedes hacer peticiones: usadas en el gym, usadas de 2 días, usadas en fase ovulatoria, usadas durante masturbación.</p>
+            <p><span class="price">$1,000</span></p>
+            <p>Otras peticiones de fluidos que aumentan el precio: squirteadas, con pipí, popó o menstruación.</p>
+            <p>¿Te interesa otro tipo de artículos personales usados? Envíame tributo acompañado de tu mensaje con lo que deseas.</p>
+          </div>
+        </details>
+
+        <details class="svc">
+          <summary>Decoraciones eróticas SheLa <span class="sign" aria-hidden="true"></span></summary>
+          <div class="svc-body">
+            <p>Pinturas eróticas, estampado de mis nalgas en tus camisas, esculturas eróticas u otros artículos artísticos.</p>
+            <a href="https://www.instagram.com/decoerotikshela" class="link-btn" target="_blank" rel="noopener">@decoerotikshela</a>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== V. CONTACTO ===== -->
+  <section id="contacto">
+    <span class="numeral" aria-hidden="true">V</span>
+    <div class="act-label" style="justify-content:center">V · Contacto</div>
+    <div class="act-body">
+      <p class="contact-close reveal">«El placer es algo que se entrena, se practica, y cuantas más veces se experimenta, más formas de habitarlo se expresan en tu vida.»</p>
+      <p class="contact-note reveal d1">Si llegaste hasta aquí y algo en ti dijo que sí, escríbeme. Recuerda que la conversación comienza con el tributo.</p>
+      <div class="contact-btns reveal d1">
+        <a href="https://t.me/PENDIENTE" class="btn pending" target="_blank" rel="noopener" data-cursor>Telegram</a>
+        <a href="https://wa.me/PENDIENTE" class="btn pending" target="_blank" rel="noopener" data-cursor>WhatsApp</a>
+      </div>
+      <p class="contact-remind reveal d2">Sin captura no hay conversación.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="sig">Ginny Delice</div>
+    <div class="meta">Xalapa · Veracruz · México</div>
+    <div class="meta adult">Contenido para mayores de 18 años</div>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var body=document.body;
+  var gate=document.getElementById('gate');
+  var site=document.getElementById('site');
+  var KEY='ginny_age_ok';
+
+  function sessionStorageOk(){try{return !!window.sessionStorage;}catch(e){return false;}}
+
+  /* ---- SCROLL REVEAL ---- */
+  var revealInit=false;
+  function initReveal(){
+    if(revealInit)return; revealInit=true;
+    var els=document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){
+      els.forEach(function(el){el.classList.add('in');});
+      return;
+    }
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
+      });
+    },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el);});
+  }
+
+  /* ---- AGE GATE ---- */
+  function open(){
+    gate.classList.add('gone');
+    body.classList.remove('locked');
+    site.classList.add('revealed');
+    if(sessionStorageOk()){try{sessionStorage.setItem(KEY,'1');}catch(e){}}
+    initReveal();
+  }
+  if(sessionStorageOk() && sessionStorage.getItem(KEY)==='1'){
+    gate.classList.add('gone');
+    body.classList.remove('locked');
+    site.classList.add('revealed');
+    initReveal();
+  }
+
+  document.getElementById('enter').addEventListener('click',open);
+  document.getElementById('leave').addEventListener('click',function(){
+    window.location.href='https://www.google.com';
+  });
+
+  /* ---- CUSTOM CURSOR ---- */
+  var dot=document.querySelector('.cur-dot');
+  var ring=document.querySelector('.cur-ring');
+  var fine=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(fine){
+    var rx=0,ry=0,mx=0,my=0;
+    window.addEventListener('mousemove',function(e){
+      mx=e.clientX;my=e.clientY;
+      dot.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';
+    });
+    (function loop(){
+      rx+=(mx-rx)*.16; ry+=(my-ry)*.16;
+      ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';
+      requestAnimationFrame(loop);
+    })();
+    var hot='a,button,summary,[data-cursor]';
+    document.addEventListener('mouseover',function(e){
+      if(e.target.closest(hot)) ring.classList.add('hot');
+    });
+    document.addEventListener('mouseout',function(e){
+      if(e.target.closest(hot)) ring.classList.remove('hot');
+    });
+  }
+})();
+</script>
 </body>
 </html>
